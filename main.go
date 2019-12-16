@@ -210,7 +210,6 @@ func getPictures(w http.ResponseWriter, r *http.Request) {
 	db, _ := data.ConnectDB()
 	defer db.Close()
 	jsonPictures, err := json.Marshal(models.GetPictures(db))
-	w.Write(jsonPictures)
 	if err == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -218,7 +217,6 @@ func getPictures(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func createImage(w http.ResponseWriter, r *http.Request) {
@@ -239,9 +237,9 @@ func createImage(w http.ResponseWriter, r *http.Request) {
 	}
 	thumb := uuids[0].String() + ".jpg"
 	lowres := uuids[1].String() + ".jpg"
-	highRes := uuids[2].String() + ".jpg"
+	highres := uuids[2].String() + ".jpg"
 	userValid := r.Context().Value(middlewares.UserKey).(*models.User)
-	img := models.NewImage(userValid.UserID, thumb, lowres, highRes)
+	img := models.NewImage(userValid.UserID, thumb, lowres, highres)
 	db, _ := data.ConnectDB()
 	defer db.Close()
 

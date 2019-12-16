@@ -9,17 +9,18 @@ import (
 
 type Picture struct {
 	gorm.Model
-	ImageID      int    `json:"image_id"`
-	Title        string `json: "title"`
-	Descritption string `json: "description"`
-	Image        Image
+	ID      int    `json:"picture_id"`
+	Title        string `json:"title"`
+	Descritption string `json:"description"`
+	Image        Image `json:"image"`
 }
 
 func newPicture(imageID int, title string, description string) *Picture {
 	return &Picture{
-		ImageID:      imageID,
+		ID:      imageID,
 		Title:        title,
 		Descritption: description,
+
 	}
 }
 
@@ -35,7 +36,15 @@ func NewPictureJSON(jsonBytes []byte) *Picture {
 
 func GetPictures(db *gorm.DB) []Picture {
 	var pictures []Picture
-	db.Preload("Image").Preload("User").Order("created_at desc").Find(&pictures) //latest to be on top
+	db.Preload("image").Preload("User").Order("created_at desc").Find(&pictures) //latest to be on top
 	fmt.Println(pictures)
 	return pictures
+}
+func GetPicture(id int, db *gorm.DB) *Picture {
+	picture := new(Picture)
+	db.Find(picture, id)
+	if picture.picture_id == id {
+		return picture
+	}
+	return nil
 }
